@@ -1,6 +1,6 @@
 # LangChain SQL Agent (MSSQL + Ollama or Gemini)
 
-A SQL agent that answers natural language questions about an MSSQL database using LangChain agents. You can use **Ollama** (e.g. `ministral-3:3b`) running locally or **Google Gemini** (e.g. `gemini-2.0-flash`). Use it via **LangGraph Studio** (interactive chat with memory) or the **FastAPI REST API**.
+A SQL agent that answers natural language questions about an MSSQL database using LangChain agents. You can use **Ollama** (e.g. `ministral-3:3b`) running locally or **Google Gemini** (e.g. `gemini-2.0-flash`). Use it via **LangGraph Studio** (interactive chat with memory).
 
 ## Prerequisites
 
@@ -73,35 +73,15 @@ Start the Studio dev server:
 langgraph dev
 ```
 
-Open the Studio UI in your browser. You can ask questions in natural language, for example:
+Add `--no-browser` to skip opening the browser automatically: `langgraph dev --no-browser`.
+
+Open the Studio UI in your browser (or use the chatbot UI at the link below). You can ask questions in natural language, for example:
 
 - "Tell me the schema of the database"
 - "Show me the invoices for the 5 top customers"
 - "What tables are available?"
 
 Conversation history is kept so you can ask follow-up questions.
-
-### Option 2: FastAPI REST API
-
-Start the API server:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Endpoints:
-
-- **GET /health** – Health check
-- **GET /tables** – List database tables
-- **POST /query** – Natural language query
-
-Example:
-
-```bash
-curl -X POST http://localhost:8000/query \
-  -H "Content-Type: application/json" \
-  -d '{"question": "How many tables are in the database?"}'
-```
 
 ## Security
 
@@ -119,9 +99,7 @@ curl -X POST http://localhost:8000/query \
 ├── langgraph.json       # LangGraph Studio config
 ├── config.py            # Single source of truth for all config and URLs
 ├── llm.py               # LLM factory (Ollama or Gemini)
-├── sql_agent.py         # SQL agent (shared by Studio and API)
-├── app/
-│   └── main.py          # FastAPI app
+├── sql_agent.py         # SQL agent
 └── README.md
 ```
 
