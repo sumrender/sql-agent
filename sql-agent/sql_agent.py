@@ -1,7 +1,9 @@
 """SQL agent for SQLite, used by both LangGraph Studio and the FastAPI API."""
 from langchain.agents import create_agent
+from langchain.agents.middleware import HumanInTheLoopMiddleware
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
+from langgraph.checkpoint.memory import InMemorySaver
 
 from config import get_sqlite_connection_uri
 from logging_config import get_logger, setup_logging
@@ -75,4 +77,10 @@ agent = create_agent(
     model,
     tools,
     system_prompt=system_prompt,
+    middleware=[
+        HumanInTheLoopMiddleware(
+            interrupt_on={"sql_db_query": True},
+            description_prefix="Tool execution pending approval",
+        ),
+    ]
 )
