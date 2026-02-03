@@ -83,6 +83,49 @@ Open the Studio UI in your browser (or use the chatbot UI at the link below). Yo
 
 Conversation history is kept so you can ask follow-up questions.
 
+### Option 2: Evaluation (test suite)
+
+The repo includes a custom evaluation suite to measure whether the agent generates correct SQL and accurate answers against the Chinook database.
+
+**Run all test cases:**
+
+```bash
+python -m eval.run_eval
+```
+
+**Run by category** (e.g. only simple or aggregation questions):
+
+```bash
+python -m eval.run_eval --category simple
+python -m eval.run_eval --category aggregation
+python -m eval.run_eval --category join
+python -m eval.run_eval --category filter
+python -m eval.run_eval --category complex
+```
+
+**Options:**
+
+- `-o path` / `--output path` – Write JSON results to this path (default: `eval_results/eval_results.json`).
+- `-q` / `--quiet` – Only print the summary, not each test.
+
+Results are printed to the terminal and written to `eval_results/` by default.
+
+### Option 3: Pytest
+
+The same test cases can be run via pytest (one test per case):
+
+```bash
+pytest
+```
+
+**Useful options:**
+
+- `pytest -v` – Verbose test names.
+- `pytest -k "simple"` – Only tests whose id contains `simple`.
+- `pytest -k "simple_001"` – Run a single test by id.
+
+The agent and LLM are used for each test, so ensure Ollama (or Gemini) and the database are available.
+
 ## Security
 
 - Use a **read-only** database user when possible.
@@ -100,6 +143,15 @@ Conversation history is kept so you can ask follow-up questions.
 ├── config.py            # Single source of truth for all config and URLs
 ├── llm.py               # LLM factory (Ollama or Gemini)
 ├── sql_agent.py         # SQL agent
+├── eval/                # Evaluation suite
+│   ├── test_cases.py    # Chinook test cases (simple, aggregation, join, filter, complex)
+│   ├── evaluator.py     # EvalResult, EvalSummary, SQLAgentEvaluator
+│   └── run_eval.py      # CLI: python -m eval.run_eval
+├── tests/
+│   ├── conftest.py
+│   └── test_sql_agent.py   # Pytest parametrized tests
+├── eval_results/        # JSON output from eval (gitignored)
+├── pytest.ini           # asyncio_mode, testpaths
 └── README.md
 ```
 

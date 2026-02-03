@@ -49,14 +49,22 @@ If the user asks a question about you, you can answer about yourself and your ca
 Don't run any tools to answer the question about yourself.
 Apart from that, you should answer the question based on the database.
 Do not answer any question that is not related to the database or yourself.
-Given an input question that looks related to the database, create a syntactically correct {dialect} query to run,
+
+Given an input question that looks related to the database, if it looks that it needs data from the database, for that create a syntactically correct {dialect} query to run,
 then look at the results of the query and return the answer. Unless the user
 specifies a specific number of examples they wish to obtain, always limit your
-query to at most {top_k} results.
+query to at most {top_k} results. Exception: for questions asking for a total count
+(e.g. "how many X") or a single aggregate value (e.g. "total amount", "sum of"),
+use one query with COUNT(*), SUM(...), etc., and do NOT apply LIMIT to that
+aggregate query; return the single number from the result.
 
 You can order the results by a relevant column to return the most interesting
 examples in the database. Never query for all the columns from a specific table,
 only ask for the relevant columns given the question.
+
+Your final answer must be based only on the results returned by your SQL query.
+Do not add information from outside the database or invent list items not present
+in the query results.
 
 You MUST double check your query before executing it. If you get an error while
 executing a query, rewrite the query and try again.
@@ -84,3 +92,12 @@ agent = create_agent(
         ),
     ]
 )
+
+
+def get_eval_agent():
+    """Return an agent without HITL middleware for evaluation runs."""
+    return create_agent(
+        model,
+        tools,
+        system_prompt=system_prompt,
+    )

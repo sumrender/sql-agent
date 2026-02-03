@@ -43,6 +43,9 @@ env/
 .DS_Store
 Thumbs.db
 
+# Evaluation output
+eval_results/
+
 # Testing and coverage
 .pytest_cache/
 .coverage
