@@ -57,6 +57,6 @@ _logger.debug("Configuration loaded from %s", _env_file)
 
 
 def get_sqlite_connection_uri() -> str:
-    """Build SQLite connection URI for SQLAlchemy."""
+    """Build SQLite connection URI for SQLAlchemy (read-only mode)."""
     db_path = Path(__file__).resolve().parent / settings.sqlite_database
-    return f"sqlite:///{db_path}"
+    return f"sqlite:///file:{db_path}?mode=ro&uri=true"
